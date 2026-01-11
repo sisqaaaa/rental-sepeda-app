@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SiPalingGowes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #F1C40F; --dark: #2C3E50; --bg: #ecf0f1; --white: #ffffff; }
+        body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; background: var(--bg); color: var(--dark); }
+        .hidden { display: none !important; }
+
+        /* --- CSS RESPONSIF --- */
+        
+        /* 1. LOGIN */
+        #login-section { display: flex; height: 100vh; width: 100%; }
+        .login-visual { flex: 1.2; background: var(--dark); display: flex; flex-direction: column; justify-content: center; padding: 60px; color: var(--primary); }
+        .login-form { flex: 0.8; background: var(--white); display: flex; align-items: center; justify-content: center; padding: 30px; }
+        
+        .visual-content h1 { font-size: 3.5rem; margin: 0; font-weight: 800; line-height: 1.1; }
+        .form-box { width: 100%; max-width: 350px; }
+        
+        input { width: 100%; padding: 15px; border: 2px solid #ddd; background: #f8f9fa; border-radius: 8px; font-size: 1rem; box-sizing: border-box; margin-bottom: 15px; }
+        .btn-main { width: 100%; padding: 15px; background: var(--primary); border: none; font-weight: 800; cursor: pointer; border-radius: 8px; font-size: 1rem; }
+        
+        /* 2. DASHBOARD */
+        .navbar { background: var(--dark); padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; color: white; position: sticky; top: 0; z-index: 50; }
+        .btn-logout { background: transparent; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 5px 15px; font-size: 0.8rem; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        
+        .hero { background: var(--dark); color: white; padding: 30px 5% 60px; text-align: center; border-bottom: 5px solid var(--primary); }
+        .container { padding: 0 5% 40px; max-width: 1000px; margin: -40px auto 0; position: relative; z-index: 2; }
+        
+        /* GRID RESPONSIF */
+        .grid-sepeda { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 20px; 
+        }
+
+        .card { background: var(--white); border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.2s; display: flex; flex-direction: column;}
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        
+        .card-header { background: #f1f2f6; height: 120px; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; position: relative; }
+        .card-tag { position: absolute; top: 10px; right: 10px; background: var(--dark); color: white; padding: 3px 8px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; border-radius: 4px; }
+        .card-body { padding: 20px; text-align: center; }
+        
+        .stok-badge { display: inline-block; padding: 5px 10px; background: #d1f2eb; color: #009432; border-radius: 20px; font-size: 0.8rem; font-weight: bold; margin-bottom: 10px; }
+        .stok-habis { background: #fad390; color: #e55039; }
+
+        /* MODAL */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 100; }
+        .modal-box { background: white; padding: 30px; width: 90%; max-width: 350px; border-radius: 15px; text-align: center; }
+        
+        /* QR Code Tengah & Instruksi Cash */
+        .qris-img { width: 150px; height: 150px; margin: 10px auto; display: block; border: 1px solid #ddd; padding: 5px; border-radius: 10px;}
+        .cash-instruction { background: #fff3cd; color: #856404; padding: 15px; border-radius: 8px; border: 1px solid #ffeeba; margin-top: 15px; font-size: 0.9rem; text-align: left;}
+        
+        @media (max-width: 768px) {
+            #login-section { flex-direction: column; } 
+            .login-visual { padding: 40px 20px; flex: 0.4; text-align: center; }
+            .visual-content h1 { font-size: 2.5rem; } 
+            .login-form { flex: 0.6; padding: 30px 20px; }
+            .navbar { padding: 15px 20px; }
+            .hero { padding: 30px 20px 60px; }
+            .grid-sepeda { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-section">
+        <div class="login-visual">
+            <div class="visual-content">
+                <h1>GOWES<br><span style="color:white">NOW.</span></h1>
+                <p>Sewa Sepeda Jadi Gampang.</p>
+            </div>
+        </div>
+        <div class="login-form">
+            <div class="form-box">
+                <h3 style="margin-bottom:20px;">MASUK MEMBER</h3>
+                <input type="text" id="inputNama" placeholder="Nama Lengkap">
+                <input type="number" id="inputTelp" placeholder="Nomor WA">
+                <button class="btn-main" onclick="login()">MASUK SEKARANG</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard-section" class="hidden">
+        <nav class="navbar">
+            <div style="font-weight: 800;">SIPALING<span style="color:var(--primary)">GOWES</span></div>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span id="userDisplay" style="font-size:0.9rem;">USER</span>
+                <button class="btn-logout" onclick="location.reload()">LOGOUT</button>
+            </div>
+        </nav>
+
+        <div class="hero">
+            <h2>PILIH SEPEDA</h2>
+            <p>Stok selalu update real-time.</p>
+        </div>
+
+        <div class="container">
+            <div id="list-sepeda" class="grid-sepeda">Loading...</div>
+
+            <div id="section-pinjaman" class="hidden" style="margin-top: 40px; border-top: 1px dashed #ccc; padding-top:20px;">
+                <h4 style="text-align:center; color:var(--dark);">SEDANG DIPINJAM</h4>
+                <div id="list-pinjaman" class="grid-sepeda"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal" class="modal-overlay hidden">
+        <div class="modal-box">
+            <h3>KONFIRMASI</h3>
+            <p id="modalMerk">...</p>
+            <h2 id="modalHarga" style="color:var(--dark);">Rp 0</h2>
+            
+            <p style="margin: 15px 0 5px 0; font-size: 0.9rem; color: #666;">Pilih Metode:</p>
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <button onclick="pilih('QRIS')" id="btnQ" style="flex:1; padding:10px; border:1px solid #ccc; background:white; cursor:pointer;">QRIS</button>
+                <button onclick="pilih('CASH')" id="btnC" style="flex:1; padding:10px; border:1px solid #ccc; background:white; cursor:pointer;">CASH</button>
+            </div>
+
+            <div id="boxQris" class="hidden">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BayarSewa" class="qris-img">
+                <p style="font-size:0.8rem; margin:5px 0;">Upload Bukti:</p>
+                <input type="file" id="fileBukti" style="font-size:0.8rem; width:100%;">
+            </div>
+
+            <div id="boxCash" class="hidden">
+                <div class="cash-instruction">
+                    <b>💵 Instruksi Pembayaran Tunai:</b><br>
+                    1. Datang ke meja kasir.<br>
+                    2. Sebutkan nama & sepeda pilihan.<br>
+                    3. Bayar tunai & ambil kunci.<br>
+                    4. Klik tombol <b>"BAYAR & SEWA"</b> di bawah jika sudah.
+                </div>
+            </div>
+
+            <div style="margin-top:20px; display:flex; gap:10px;">
+                <button onclick="tutup()" style="flex:1; padding:10px; background:#eee; border:none; border-radius:5px; cursor:pointer;">BATAL</button>
+                <button onclick="bayar()" style="flex:1; padding:10px; background:var(--primary); border:none; font-weight:bold; border-radius:5px; cursor:pointer;">BAYAR & SEWA</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gunakan '/api' agar otomatis ngikut link Ngrok/Localhost
+        const API = '/api'; 
+        let user = null, item = null, method = null;
+        const fmt = (n) => new Intl.NumberFormat('id-ID', {style:'currency', currency:'IDR', minimumFractionDigits:0}).format(n);
+
+        async function login() {
+            const nama = document.getElementById('inputNama').value;
+            const telp = document.getElementById('inputTelp').value;
+            if(!nama || !telp) return alert("Lengkapi data!");
+            try {
+                const res = await fetch(`${API}/auth`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({nama, no_telepon:telp})});
+                user = await res.json();
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('dashboard-section').classList.remove('hidden');
+                document.getElementById('userDisplay').innerText = user.nama.toUpperCase();
+                loadData();
+            } catch(e) { alert("Gagal koneksi server!"); }
+        }
+
+        function loadData() {
+            fetch(`${API}/sepeda`).then(r=>r.json()).then(data => {
+                const div = document.getElementById('list-sepeda');
+                div.innerHTML = '';
+                data.forEach(s => {
+                    let icon = s.jenis.includes('MTB') ? '🚵' : (s.jenis.includes('Balap') ? '🚴' : '🚲');
+                    
+                    // Logika Stok
+                    let stokHTML = `<span class="stok-badge">Stok: ${s.stok}</span>`;
+                    let btnState = `onclick="bukaModal(${s.sepeda_id}, '${s.merk}', ${s.harga_sewa})"`;
+                    let btnStyle = "";
+                    let btnText = "SEWA";
+
+                    if(s.stok <= 0) {
+                        stokHTML = `<span class="stok-badge stok-habis">HABIS</span>`;
+                        btnState = "disabled";
+                        btnStyle = "background:#ccc; cursor:not-allowed;";
+                        btnText = "FULL";
+                    }
+
+                    div.innerHTML += `
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-tag">${s.jenis}</span>
+                            ${icon}
+                        </div>
+                        <div class="card-body">
+                            <b>${s.merk}</b><br>
+                            ${stokHTML}<br>
+                            <small style="color:#7f8c8d">${fmt(s.harga_sewa)}/jam</small><br><br>
+                            <button class="btn-main" style="${btnStyle}" ${btnState}>${btnText}</button>
+                        </div>
+                    </div>`;
+                });
+            });
+            loadPinjaman();
+        }
+
+        function loadPinjaman() {
+            fetch(`${API}/pinjaman/${user.user_id}`).then(r=>r.json()).then(data => {
+                const div = document.getElementById('list-pinjaman');
+                document.getElementById('section-pinjaman').className = data.length ? '' : 'hidden';
+                div.innerHTML = '';
+                data.forEach(p => {
+                    div.innerHTML += `
+                    <div class="card" style="border:1px solid var(--primary)">
+                        <div class="card-body">
+                            <b>${p.merk}</b><br>
+                            <span style="color:orange; font-size:0.9rem;">Sedang Dipakai</span><br>
+                            <div id="timer-${p.peminjaman_id}" data-end="${p.waktu_selesai_rencana}" style="font-weight:bold; margin:10px 0;">...</div>
+                            <button onclick="kembali(${p.peminjaman_id}, ${p.sepeda_id}, ${p.harga_sewa})" style="padding:10px; background:var(--dark); color:white; border:none; width:100%; border-radius:5px; cursor:pointer;">KEMBALIKAN</button>
+                        </div>
+                    </div>`;
+                });
+                startTimer();
+            });
+        }
+
+        // --- TIMER START SETELAH PEMBAYARAN ---
+        let timerInt = null;
+        function startTimer() {
+            if(timerInt) clearInterval(timerInt);
+            timerInt = setInterval(() => {
+                document.querySelectorAll('[id^="timer-"]').forEach(el => {
+                    const diff = new Date(el.getAttribute('data-end')) - new Date();
+                    if(diff < 0) { 
+                        el.innerText = "⚠️ Telat (Denda)"; 
+                        el.style.color = "red";
+                    } else {
+                        const h = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+                        const m = Math.floor((diff%(1000*60*60))/(1000*60));
+                        const s = Math.floor((diff%(1000*60))/1000);
+                        el.innerText = `⏱️ ${h}j ${m}m ${s}d`;
+                    }
+                });
+            }, 1000);
+        }
+
+        function bukaModal(id, merk, harga) {
+            const jam = prompt("Mau sewa berapa jam?");
+            if(!jam) return;
+            item = {id, total: jam*harga, jam};
+            document.getElementById('modalMerk').innerText = merk;
+            document.getElementById('modalHarga').innerText = fmt(item.total);
+            document.getElementById('modal').classList.remove('hidden');
+            pilih(null);
+        }
+        
+        function tutup() { document.getElementById('modal').classList.add('hidden'); }
+        
+        function pilih(m) {
+            method = m;
+            document.getElementById('boxQris').className = m==='QRIS'?'':'hidden';
+            document.getElementById('boxCash').className = m==='CASH'?'':'hidden'; // Tampilkan Instruksi Cash
+            
+            // Visual Tombol Aktif
+            document.getElementById('btnQ').style.background = m==='QRIS'?'#ddd':'white';
+            document.getElementById('btnC').style.background = m==='CASH'?'#ddd':'white';
+        }
+
+        async function bayar() {
+            if(!method) return alert("Pilih metode bayar!");
+            if(method === 'QRIS' && !document.getElementById('fileBukti').value) return alert("Upload bukti dulu!");
+
+            // PROSES DATABASE (Insert Peminjaman & Kurang Stok)
+            await fetch(`${API}/pinjam`, {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({user_id:user.user_id, sepeda_id:item.id, durasi_jam:item.jam})
+            });
+            
+            // Setelah OK, Timer Otomatis jalan karena data sudah masuk DB
+            alert("Berhasil Sewa!");
+            tutup(); loadData();
+        }
+
+        async function kembali(pid, sid, harga) {
+            if(!confirm("Kembalikan sepeda?")) return;
+            await fetch(`${API}/kembali`, {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({peminjaman_id:pid, sepeda_id:sid, harga_sewa:harga})
+            });
+            
+            alert("Terima Kasih!");
+            loadData();
+        }
+    </script>
+</body>
+</html>
